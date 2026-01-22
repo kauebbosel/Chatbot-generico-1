@@ -21,6 +21,6 @@ function renderToast(data) {
     `;
 
     wrapper.appendChild(toast);
-    // Auto-remove após 8 segundos
-    setTimeout(() => { if(toast) toast.remove(); }, 8000);
+    // Auto-remove após 10 segundos
+    setTimeout(() => { if(toast) toast.remove(); }, 10000);
 }

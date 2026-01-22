@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot Genérico - Interface de Testes</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/toasts.css">
     <style>
         :root {
             --bg-primary: #0f0f1a;
@@ -421,6 +422,13 @@
         </div>
     </main>
 
+    <!-- Toast Wrapper -->
+    <div id="toast-wrapper"></div>
+
+    <!-- Scripts externos -->
+    <script src="/static/js/ui.js"></script>
+    <script src="/static/js/api.js"></script>
+
     <script>
         // Estado da aplicação
         let sessionId = generateSessionId();
@@ -608,6 +616,14 @@
 
         // Verificar saúde periodicamente
         setInterval(checkHealth, 30000);
+
+        // Função para mostrar toast (integrada com ui.js)
+        // Disponibilizada globalmente para api.js
+        window.showToast = function(toastData) {
+            if (window.renderToast && toastData) {
+                window.renderToast(toastData);
+            }
+        };
     </script>
 </body>
 

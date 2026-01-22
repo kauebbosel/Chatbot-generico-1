@@ -88,3 +88,26 @@ class ErrorResponse(BaseModel):
         default=None,
         description="Detalhes adicionais do erro",
     )
+
+
+class ToastAction(BaseModel):
+    """Ação disponível em um toast."""
+    
+    label: str = Field(..., description="Texto do botão")
+    tipo: str = Field(..., description="Tipo da ação (dismiss, expand, close, etc.)")
+    primary: bool = Field(default=False, description="Se é uma ação primária")
+
+
+class ToastResponse(BaseModel):
+    """Response do endpoint /toasts/pendentes."""
+    
+    titulo: str = Field(..., description="Título do toast")
+    categoria: Literal["humor", "tecnico", "alerta"] = Field(
+        ...,
+        description="Categoria do toast (define a cor)",
+    )
+    mensagem: str = Field(..., description="Mensagem do toast")
+    acoes: list[ToastAction] = Field(
+        default_factory=list,
+        description="Lista de ações disponíveis no toast",
+    )

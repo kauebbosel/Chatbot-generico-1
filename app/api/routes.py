@@ -4,9 +4,11 @@ Rotas da API do Chatbot.
 Define os endpoints principais:
 - POST /chat: envia mensagem e recebe resposta
 - GET /health: verifica status da aplicação
+- GET /toasts/pendentes: retorna notificações pendentes (toasts)
 """
 
 import logging
+import random
 
 from fastapi import APIRouter, HTTPException, status
 
@@ -16,6 +18,8 @@ from app.models.schemas import (
     ChatResponse,
     HealthResponse,
     ErrorResponse,
+    ToastResponse,
+    ToastAction,
 )
 from app.services.llm_provider import (
     get_llm_provider,
@@ -180,3 +184,51 @@ async def health() -> HealthResponse:
             provider_available=False,
             message=f"Erro ao verificar status: {e}",
         )
+
+
+@router.get(
+    "/toasts/pendentes",
+    response_model=ToastResponse,
+    summary="Obter notificação pendente",
+    description=(
+        "Retorna uma notificação (toast) pendente aleatória. "
+        "Por enquanto, retorna notificações de exemplo hardcoded. "
+        "No futuro, pode ser integrado com um sistema de notificações real."
+    ),
+)
+async def get_toast() -> ToastResponse:
+    """
+    Retorna uma notificação pendente aleatória.
+    
+    Por enquanto, retorna notificações de exemplo. 
+    Pode ser expandido para buscar de um banco de dados ou sistema de notificações.
+    """
+    # Notificações de exemplo (hardcoded por enquanto)
+    # No futuro, pode vir de um banco de dados ou sistema de notificações
+    notificacoes = [
+        {
+            "titulo": "Mestre da Sabedoria",
+            "categoria": "humor",
+            "mensagem": "Vi que a luz da sala está acesa... Você quer que eu chame o capitão planeta ou você mesmo apaga?",
+            "acoes": [
+                {"label": "Apagar agora", "tipo": "dismiss", "primary": True}
+            ],
+        },
+        {
+            "titulo": "💡 Norma NBR 5410",
+            "categoria": "tecnico",
+            "mensagem": "Sabia que fiações antigas podem dissipar calor e aumentar sua conta em até 15%?",
+            "acoes": [
+                {"label": "Saber mais", "tipo": "expand", "primary": True},
+                {"label": "Ok", "tipo": "close", "primary": False},
+            ],
+        },
+    ]
+    
+    # Seleciona uma notificação aleatória
+    toast_data = random.choice(notificacoes)
+    
+    # Converte as ações para ToastAction
+    toast_data["acoes"] = [ToastAction(**acao) for acao in toast_data["acoes"]]
+    
+    return ToastResponse(**toast_data)

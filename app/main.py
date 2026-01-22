@@ -105,6 +105,15 @@ app.add_middleware(
 
 
 # ==========================================
+# Arquivos Estáticos
+# ==========================================
+# Monta a pasta static para servir CSS, JS e outros arquivos
+# IMPORTANTE: Deve ser montado ANTES das rotas que usam FileResponse
+# para evitar conflitos de roteamento
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+# ==========================================
 # Rotas
 # ==========================================
 app.include_router(router, tags=["chat"])
