@@ -25,6 +25,61 @@ class ChatRequest(BaseModel):
         description="Mensagem do usuário para o chatbot",
         examples=["Olá, tudo bem?", "Me explique o que é Python"],
     )
+    
+    model_override: str | None = Field(
+        default=None,
+        description="Nome do modelo específico para esta requisição (ex: gemini-3-pro-preview)",
+    )
+
+
+class PersonaOverride(BaseModel):
+    """Override temporário para a persona."""
+    
+    description: str | None = Field(None, description="Nova descrição para a persona")
+    system_prompt: str | None = Field(None, description="Novo system prompt")
+
+
+class ProactiveChatRequest(BaseModel):
+    """Request para o endpoint /chat/proactive."""
+    
+    persona_id: str = Field(
+        ...,
+        description="ID da persona a ser usada (tom do bot)",
+        examples=["provocador", "motivador", "debochado"],
+    )
+    
+    target_profile_id: str | None = Field(
+        default=None,
+        description="ID do perfil do usuário alvo (contexto)",
+        examples=["gastao", "indiferente", "engajado"],
+    )
+    
+    persona_override: PersonaOverride | None = Field(
+        default=None,
+        description="Override opcional das configurações da persona",
+    )
+    
+    model_override: str | None = Field(
+        default=None,
+        description="Nome do modelo específico para esta requisição (ex: gemini-3-pro-preview)",
+        examples=["gemini-1.5-pro", "gemini-1.5-flash"],
+    )
+
+
+class PersonaResponse(BaseModel):
+    """Modelo de persona para listagem."""
+    
+    id: str
+    name: str
+    description: str
+
+
+class TargetProfileResponse(BaseModel):
+    """Modelo de perfil de usuário alvo para listagem."""
+    
+    id: str
+    name: str
+    description: str
 
 
 class ChatResponse(BaseModel):
@@ -38,7 +93,7 @@ class ChatResponse(BaseModel):
         ...,
         description="Resposta gerada pelo chatbot",
     )
-    provider: Literal["ollama", "huggingface"] = Field(
+    provider: Literal["ollama", "huggingface", "google"] = Field(
         ...,
         description="Provider LLM usado para gerar a resposta",
     )

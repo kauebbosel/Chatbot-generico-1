@@ -53,6 +53,8 @@ async def lifespan(app: FastAPI):
     if settings.llm_provider == "ollama":
         logger.info(f"   Modelo: {settings.ollama_model}")
         logger.info(f"   Ollama URL: {settings.ollama_base_url}")
+    elif settings.llm_provider == "google":
+        logger.info(f"   Modelo: {settings.gemini_model}")
     else:
         logger.info(f"   Modelo: {settings.hf_model}")
     logger.info(f"   Memória: {'SQLite' if settings.use_sqlite else 'RAM'}")
@@ -126,6 +128,11 @@ app.include_router(router, tags=["chat"])
 async def root():
     """Serve a interface de testes."""
     return FileResponse(STATIC_DIR / "index.html")
+
+@app.get("/notifications", include_in_schema=False)
+async def notifications_page():
+    """Serve a interface de testes de notificações."""
+    return FileResponse(STATIC_DIR / "notifications.html")
 
 
 # ==========================================
